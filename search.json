@@ -9,8 +9,22 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Albums",
+    "title": "Taylor Swift Album Cover Comparisons",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "Comparing color composition, similarities, and differences across all 15 Taylor Swift album covers in the dataset."
+  },
+  {
+    "objectID": "index.html#color-category-distribution",
+    "href": "index.html#color-category-distribution",
+    "title": "Taylor Swift Album Cover Comparisons",
+    "section": "Color Category Distribution",
+    "text": "Color Category Distribution\nRather than measuring isolated hex codes, colors are grouped into broad families (neutrals, warm tones, and accents).\n\n\nLoad the color data and declare specific color mappings\n# Load categorized color percentages for all 15 covers\nalbum_colors &lt;- read_csv(\"data/album_color_summary.csv\", show_col_types = FALSE) |&gt;\n  pivot_longer(cols = -album, names_to = \"color_group\", values_to = \"percentage\") |&gt;\n  filter(percentage &gt;= 3) # Keep prominent color categories\n\n# Map each category name directly to its representative color\ncategory_colors &lt;- c(\n  \"Black\"            = \"#1a1a1a\",\n  \"Gray\"             = \"#8a8a8e\",\n  \"White\"            = \"#f5f5f7\",\n  \"Beige / Cream\"    = \"#f3e9d2\",\n  \"Brown\"            = \"#582f0e\",\n  \"Brown / Tan\"      = \"#a68a64\",\n  \"Red\"              = \"#b7092a\",\n  \"Orange / Gold\"    = \"#e09f3e\",\n  \"Yellow\"           = \"#ffd166\",\n  \"Green\"            = \"#2d6a4f\",\n  \"Blue\"             = \"#3a86ff\",\n  \"Purple\"           = \"#7209b7\",\n  \"Pink\"             = \"#ff70a6\",\n  \"Pastel / Neutral\" = \"#e2cfea\",\n  \"Muted Slate\"      = \"#64748b\"\n)\n\n\n\nggplot(album_colors, aes(x = percentage, y = fct_reorder(album, percentage, sum), fill = color_group)) +\n  geom_col(position = \"fill\", color = \"grey50\", linewidth = 0.2) +\n  scale_fill_manual(values = category_colors) +\n  scale_x_continuous(labels = scales::percent) +\n  labs(\n    title = \"Relative Color Composition Across Album Covers\",\n    x = \"Proportion\",\n    y = NULL,\n    fill = \"Color Category\"\n  ) +\n  theme_minimal()"
+  },
+  {
+    "objectID": "index.html#similarities-and-differences",
+    "href": "index.html#similarities-and-differences",
+    "title": "Taylor Swift Album Cover Comparisons",
+    "section": "Similarities and Differences",
+    "text": "Similarities and Differences\n\nMonochrome & High Contrast: folklore, reputation, and THE TORTURED POETS DEPARTMENT are closely linked, each consisting of over 85% grayscale tones (Black, White, Gray).\nWarm & Earthy: Fearless, Fearless (Taylor’s Version), evermore, and Taylor Swift share heavy concentrations of Gold, Brown, and Beige/Cream.\nVibrant Accents: Speak Now and Speak Now (Taylor’s Version) stand out with signature Purple and Pink tones, while Red (Taylor’s Version) introduces deep red accents against dark neutrals.\nOriginal vs. Taylor’s Version: The re-recorded covers systematically shift toward warmer, darker, or more muted palettes compared to their higher-key originals (e.g., Fearless TV deepening from light gold/white to rich brown and gold)."
   }
 ]
