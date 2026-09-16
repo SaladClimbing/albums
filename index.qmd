@@ -1,7 +1,67 @@
 ---
-title: "Albums"
+title: "Taylor Swift Album Cover Comparisons"
+author: "Andrew Lucas"
 ---
 
-This is a Quarto website.
+Comparing color composition, similarities, and differences across all 15 Taylor Swift album covers in the dataset.
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+## Color Category Distribution
+
+Rather than measuring isolated hex codes, colors are grouped into broad families (neutrals, warm tones, and accents).
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+library(tidyverse)
+```
+
+```{r}
+#| code-fold: true
+#| code-summary: "Load the color data and declare specific color mappings"
+# Load categorized color percentages for all 15 covers
+album_colors <- read_csv("data/album_color_summary.csv", show_col_types = FALSE) |>
+  pivot_longer(cols = -album, names_to = "color_group", values_to = "percentage") |>
+  filter(percentage >= 3) # Keep prominent color categories
+
+# Map each category name directly to its representative color
+category_colors <- c(
+  "Black"            = "#1a1a1a",
+  "Gray"             = "#8a8a8e",
+  "White"            = "#f5f5f7",
+  "Beige / Cream"    = "#f3e9d2",
+  "Brown"            = "#582f0e",
+  "Brown / Tan"      = "#a68a64",
+  "Red"              = "#b7092a",
+  "Orange / Gold"    = "#e09f3e",
+  "Yellow"           = "#ffd166",
+  "Green"            = "#2d6a4f",
+  "Blue"             = "#3a86ff",
+  "Purple"           = "#7209b7",
+  "Pink"             = "#ff70a6",
+  "Pastel / Neutral" = "#e2cfea",
+  "Muted Slate"      = "#64748b"
+)
+```
+
+```{r}
+ggplot(album_colors, aes(x = percentage, y = fct_reorder(album, percentage, sum), fill = color_group)) +
+  geom_col(position = "fill", color = "grey50", linewidth = 0.2) +
+  scale_fill_manual(values = category_colors) +
+  scale_x_continuous(labels = scales::percent) +
+  labs(
+    title = "Relative Color Composition Across Album Covers",
+    x = "Proportion",
+    y = NULL,
+    fill = "Color Category"
+  ) +
+  theme_minimal()
+```
+
+## Similarities and Differences
+
+- **Monochrome & High Contrast:** *folklore*, *reputation*, and *THE TORTURED POETS DEPARTMENT* are closely linked, each consisting of over 85% grayscale tones (Black, White, Gray).
+- **Warm & Earthy:** *Fearless*, *Fearless (Taylor's Version)*, *evermore*, and *Taylor Swift* share heavy concentrations of Gold, Brown, and Beige/Cream.
+- **Vibrant Accents:** *Speak Now* and *Speak Now (Taylor's Version)* stand out with signature Purple and Pink tones, while *Red (Taylor's Version)* introduces deep red accents against dark neutrals.
+- **Original vs. Taylor's Version:** The re-recorded covers systematically shift toward warmer, darker, or more muted palettes compared to their higher-key originals (e.g., *Fearless TV* deepening from light gold/white to rich brown and gold).
+
